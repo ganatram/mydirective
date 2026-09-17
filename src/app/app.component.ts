@@ -1,11 +1,28 @@
 import { Component } from '@angular/core';
+import { Model } from './repository.model';
+import { Product } from './product.model';
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
+  selector: 'app',
+  templateUrl: 'app.component.html',
   standalone: false,
-  styleUrl: './app.component.css'
 })
 export class AppComponent {
-  title = 'mydirective';
+  newProduct: Product = new Product();
+
+  model: Model = new Model();
+
+  getProduct(key: number): Product | undefined {
+    return this.model.getProduct(key);
+  }
+  getProducts(): Product[] {
+    return this.model.getProducts();
+  }
+  addProduct(p: Product) {
+    this.model.saveProduct(p);
+  }
+
+  submitForm() {
+    this.addProduct(this.newProduct);
+  }
 }
