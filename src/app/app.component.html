@@ -3,14 +3,14 @@
     <form class="m-2" (ngSubmit)="submitForm()" novalidate>
       <div class="form-group">
         <label>Name</label>
-        <input class="form-control" name="name" [(ngModel)]="newProduct.name" />
+        <input class="form-control" name="name" [(paModel)]="newProduct.name" />
       </div>
       <div class="form-group">
         <label>Category</label>
         <input
           class="form-control"
           name="category"
-          [(ngModel)]="newProduct.category"
+          [(paModel)]="newProduct.category"
         />
       </div>
       <div class="form-group">
@@ -18,14 +18,70 @@
         <input
           class="form-control"
           name="price"
-          [(ngModel)]="newProduct.price"
+          [(paModel)]="newProduct.price"
         />
       </div>
       <button class="btn btn-primary" type="submit">Create</button>
     </form>
   </div>
+
   <div class="col">
-    <table class="table table-sm table-bordered table-striped">
+    <div class="my-2">
+      <label> Tax Rate:</label>
+      <select
+        class="form-select"
+        [value]="taxRate || 0"
+        (change)="taxRate = $any($event).target.value"
+      >
+        <option value="0">None</option>
+        <option value="10">{{ 0.1 | percent }}</option>
+        <option value="20">{{ 0.2 | percent }}</option>
+        <option value="50">{{ 0.5 | percent }}</option>
+        <option value="150">{{ 1.5 | percent }}</option>
+      </select>
+    </div>
+
+    <div class="my-2">
+      <label>Category Filter:</label>
+      <select class="form-select" [(ngModel)]="categoryFilter">
+        <option>None</option>
+        <option>Watersports</option>
+        <option>Soccer</option>
+        <option>Chess</option>
+      </select>
+    </div>
+
+    <!-- <div class="bg-info p-2 text-white">
+          
+      <div>Date formatted from object: {{ dateObject | date }}</div>
+          
+      <div>Date formatted from string: {{ dateString | date }}</div>
+          
+      <div>Date formatted from number: {{ dateNumber | date }}</div>
+    </div> -->
+
+    <div class="bg-info p-2 text-white">
+        
+      <div>
+        Date formatted as shortDate: {{ dateObject | date: "shortDate" }}
+      </div>
+        
+      <div>
+        Date formatted as mediumDate: {{ dateObject | date: "mediumDate" }}
+      </div>
+        
+      <div>Date formatted as longDate: {{ dateObject | date: "longDate" }}</div>
+    </div>
+
+    <div class="bg-info p-2 text-white">
+          
+      <div>{{ getProducts() | json }}</div>
+    </div>
+
+    <table
+      *paIf="showTable"
+      class="table table-sm table-bordered table-striped"
+    >
       <tr>
         <th></th>
         <th>Name</th>
@@ -34,13 +90,29 @@
       </tr>
 
       <tr
-        *ngFor="let item of getProducts(); let i = index"
-        [pa-attr]="getProducts().length < 6 ? 'bg-success' : 'bg-warning'"
+        *ngFor="
+          let item of getProducts() | slice: 0 : itemCount || 1;
+          let i = index;
+          let odd = odd;
+          let even = even
+        "
+        [class.bg-info]="odd"
+        [class.bg-warning]="even"
       >
-        <td>{{ i + 1 }}</td>
-        <td>{{ item.name }}</td>
-        <td>{{ item.category }}</td>
-        <td>{{ item.price }}</td>
+        <td>
+          {{ i + 1 }}
+        </td>
+        <td>
+          {{ item.name | uppercase }}
+        </td>
+
+        <td>
+          {{ item.category | lowercase }}
+        </td>
+
+        <td>
+          {{ item.price | currency: "USD" : "symbol" : "2.2-2" }}
+        </td>
       </tr>
     </table>
   </div>
